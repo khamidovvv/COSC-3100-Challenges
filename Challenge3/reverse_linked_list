@@ -1,0 +1,50 @@
+from __future__ import annotations
+
+
+class Node:
+    def __init__(self, val, next=None):
+        self.val = val
+        self.next = next
+
+
+def reverse_list(head: Node | None) -> Node | None:
+    prev = None
+    curr = head
+    while curr:
+        next_node = curr.next
+        curr.next = prev
+        prev = curr
+        curr = next_node
+    return prev
+
+
+def reverse_list_recursive(head: Node | None) -> Node | None:
+    if head is None or head.next is None:
+        return head
+    new_head = reverse_list_recursive(head.next)
+    head.next.next = head
+    head.next = None
+    return new_head
+
+
+def list_to_python(head: Node | None) -> list:
+    values = []
+    while head:
+        values.append(head.val)
+        head = head.next
+    return values
+
+
+def python_to_list(values: list) -> Node | None:
+    head = None
+    for v in reversed(values):
+        head = Node(v, head)
+    return head
+
+
+if __name__ == "__main__":
+    assert list_to_python(reverse_list(python_to_list([1, 2, 3]))) == [3, 2, 1]
+    assert reverse_list(None) is None
+    assert list_to_python(reverse_list(Node(5))) == [5]
+    assert list_to_python(reverse_list_recursive(python_to_list([1, 2, 3, 4]))) == [4, 3, 2, 1]
+    print("All tests passed.")

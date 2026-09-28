@@ -1,0 +1,48 @@
+class DynamicArray:
+    def __init__(self):
+        self.capacity = 2
+        self.size = 0
+        self.array = [None] * self.capacity
+
+    def append(self, x) -> None:
+        if self.size == self.capacity:
+            self._resize(self.capacity * 2)
+        self.array[self.size] = x
+        self.size += 1
+
+    def _resize(self, new_capacity: int) -> None:
+        new_array = [None] * new_capacity
+        for i in range(self.size):
+            new_array[i] = self.array[i]
+        self.array = new_array
+        self.capacity = new_capacity
+
+    def get(self, i: int):
+        if i < 0 or i >= self.size:
+            raise IndexError("index out of range")
+        return self.array[i]
+
+    def set(self, i: int, x) -> None:
+        if i < 0 or i >= self.size:
+            raise IndexError("index out of range")
+        self.array[i] = x
+
+    def __len__(self) -> int:
+        return self.size
+
+
+if __name__ == "__main__":
+    da = DynamicArray()
+    for v in [10, 20, 30, 40]:
+        da.append(v)
+    assert len(da) == 4
+    assert da.get(0) == 10
+    assert da.get(3) == 40
+    da.set(1, 99)
+    assert da.get(1) == 99
+    try:
+        da.get(10)
+        assert False, "expected IndexError"
+    except IndexError:
+        pass
+    print("All tests passed.")

@@ -1,0 +1,19 @@
+def is_balanced(s: str) -> bool:
+    pairs = {')': '(', ']': '[', '}': '{'}
+    openers = set(pairs.values())
+    stack = []
+    for ch in s:
+        if ch in openers:
+            stack.append(ch)
+        elif ch in pairs:
+            if not stack or stack.pop() != pairs[ch]:
+                return False
+    return not stack
+
+
+if __name__ == "__main__":
+    assert is_balanced("(a[b]{c})") is True
+    assert is_balanced("([)]") is False
+    assert is_balanced("((") is False
+    assert is_balanced("") is True
+    print("All tests passed.")

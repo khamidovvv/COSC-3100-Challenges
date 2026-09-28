@@ -1,0 +1,49 @@
+from __future__ import annotations
+
+
+class Node:
+    def __init__(self, val, next=None):
+        self.val = val
+        self.next = next
+
+
+def has_cycle(head: Node | None) -> bool:
+    slow = head
+    fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow is fast:
+            return True
+    return False
+
+
+def cycle_start(head: Node | None) -> Node | None:
+    slow = head
+    fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow is fast:
+            pointer = head
+            while pointer is not slow:
+                pointer = pointer.next
+                slow = slow.next
+            return pointer
+    return None
+
+
+if __name__ == "__main__":
+    a, b, c = Node(1), Node(2), Node(3)
+    a.next, b.next, c.next = b, c, a
+    assert has_cycle(a) is True
+    assert cycle_start(a) is a
+
+    straight = Node(1, Node(2, Node(3)))
+    assert has_cycle(straight) is False
+    assert has_cycle(None) is False
+
+    self_loop = Node(1)
+    self_loop.next = self_loop
+    assert has_cycle(self_loop) is True
+    print("All tests passed.")

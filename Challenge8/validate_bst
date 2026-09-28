@@ -1,0 +1,31 @@
+from __future__ import annotations
+
+
+class TreeNode:
+    def __init__(self, val, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def is_valid_bst(root: TreeNode | None) -> bool:
+    def helper(node, low, high):
+        if node is None:
+            return True
+        if not (low < node.val < high):
+            return False
+        return helper(node.left, low, node.val) and helper(node.right, node.val, high)
+
+    return helper(root, float('-inf'), float('inf'))
+
+
+if __name__ == "__main__":
+    valid_bst = TreeNode(5, TreeNode(3), TreeNode(8))
+    assert is_valid_bst(valid_bst) is True
+
+    invalid_bst = TreeNode(5, TreeNode(1), TreeNode(8, TreeNode(4), TreeNode(9)))
+    assert is_valid_bst(invalid_bst) is False
+
+    assert is_valid_bst(None) is True
+    assert is_valid_bst(TreeNode(1)) is True
+    print("All tests passed.")
