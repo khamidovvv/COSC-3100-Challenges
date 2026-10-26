@@ -1,0 +1,61 @@
+# ---------------------------------------------------------------
+# Name: Hamidov Muxammadjon      Student ID: 4251674
+# Data Structures 2 - Graph Algorithms Lab - Task 2: DFS
+# ---------------------------------------------------------------
+
+names = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+adj = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E', 'G'],
+    'G': ['F'],
+}
+idx = {n: i for i, n in enumerate(names)}
+N = len(names)
+
+
+class Stack:
+    """Own stack made from an array with one index (top)."""
+    def __init__(self, size):
+        self.data = [None] * size
+        self.top = 0       
+
+    def push(self, x):     
+        self.data[self.top] = x
+        self.top += 1
+
+    def pop(self):         
+        self.top -= 1
+        return self.data[self.top]
+
+    def is_empty(self):
+        return self.top == 0
+
+
+def dfs(start):
+    """Iterative DFS with an explicit stack (no recursion)."""
+    visited = [False] * N
+    order = []
+   
+    s = Stack(2 * 7 + 5)
+    s.push(idx[start])
+
+    while not s.is_empty():
+        u = s.pop()                     
+        if visited[u]:                  
+            continue
+        visited[u] = True               
+        order.append(names[u])          
+       
+        for v_name in reversed(adj[names[u]]):
+            v = idx[v_name]
+            if not visited[v]:
+                s.push(v)
+    return order
+
+
+print("DFS order from A: " + " ".join(dfs('A')))
+print("DFS order from G: " + " ".join(dfs('G')))

@@ -1,0 +1,87 @@
+# ---------------------------------------------------------------
+# Name: Hamidov Muxammadjon      Student ID: 4251674
+# Data Structures 2 - Graph Algorithms Lab - Task 1: BFS
+# ---------------------------------------------------------------
+
+# Graph 1 as neighbour lists (already in alphabetical order)
+names = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+adj = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E', 'G'],
+    'G': ['F'],
+}
+idx = {n: i for i, n in enumerate(names)}   
+N = len(names)
+
+
+class Queue:
+    """Own queue made from an array with two indexes (front, back)."""
+    def __init__(self, size):
+        self.data = [None] * size
+        self.front = 0      
+        self.back = 0       
+
+    def enqueue(self, x):  
+        self.data[self.back] = x
+        self.back += 1
+
+    def dequeue(self):     
+        x = self.data[self.front]
+        self.front += 1
+        return x
+
+    def is_empty(self):
+        return self.front == self.back
+
+
+def bfs(start):
+    """Run BFS from start. Returns visit order, dist and parent arrays."""
+    discovered = [False] * N
+    dist = [-1] * N       
+    parent = [-1] * N     
+    order = []
+
+    q = Queue(N)
+    s = idx[start]
+    discovered[s] = True   
+    dist[s] = 0
+    q.enqueue(s)
+
+    while not q.is_empty():
+        u = q.dequeue()                
+        order.append(names[u])         
+        for v_name in adj[names[u]]:   
+            v = idx[v_name]
+            if not discovered[v]:
+                discovered[v] = True   
+                dist[v] = dist[u] + 1
+                parent[v] = u
+                q.enqueue(v)           
+    return order, dist, parent
+
+
+def shortest(src, dst):
+    """Print the fewest-edges path from src to dst using dist and parent."""
+    order, dist, parent = bfs(src)
+    t = idx[dst]
+    if dist[t] == -1:                   
+        print(f"Shortest {src} -> {dst}: no path")
+        return
+    
+    path = []
+    cur = t
+    while cur != -1:
+        path.append(names[cur])
+        cur = parent[cur]
+    path.reverse()
+    print(f"Shortest {src} -> {dst}: distance {dist[t]}, path {' -> '.join(path)}")
+
+
+order, dist, parent = bfs('A')
+print("BFS order from A: " + " ".join(order))
+shortest('A', 'G')
+shortest('D', 'G')

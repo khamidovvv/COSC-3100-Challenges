@@ -1,0 +1,69 @@
+# ---------------------------------------------------------------
+# Name: Hamidov Muxammadjon      Student ID: 4251674
+# Data Structures 2 - Graph Algorithms Lab - Task 3: Dijkstra
+# ---------------------------------------------------------------
+
+names = ['A', 'B', 'C', 'D', 'E', 'F']
+N = len(names)
+INF = 10 ** 9          
+NONE = -1               
+
+# Graph 2 edges (undirected): (u, v, weight)
+edges = [('A', 'B', 4), ('A', 'C', 2), ('B', 'C', 1), ('B', 'D', 5),
+         ('C', 'D', 8), ('C', 'E', 10), ('D', 'E', 2), ('D', 'F', 6),
+         ('E', 'F', 3)]
+
+
+adj = [[] for _ in range(N)]
+for a, b, w in edges:
+    ia, ib = names.index(a), names.index(b)
+    adj[ia].append((ib, w))
+    adj[ib].append((ia, w))
+
+
+def state_line(label, dist):
+    """One line of the table: label | A=.. B=.. ..."""
+    parts = []
+    for i in range(N):
+        val = "INF" if dist[i] == INF else str(dist[i])
+        parts.append(f"{names[i]}={val}")
+    return f"{label} | " + " ".join(parts)
+
+
+def dijkstra(source):
+    dist = [INF] * N
+    prev = [NONE] * N
+    settled = [False] * N
+    dist[source] = 0
+    print(state_line("init", dist))
+
+    while True:
+       
+        u = -1
+        for i in range(N):
+            if not settled[i] and dist[i] < INF:
+                if u == -1 or dist[i] < dist[u]:
+                    u = i
+        if u == -1:                    
+            break
+        settled[u] = True              
+        
+        for v, w in adj[u]:
+            if not settled[v]:
+                if dist[u] + w < dist[v]:
+                    dist[v] = dist[u] + w
+                    prev[v] = u
+        print(state_line(f"settle {names[u]} ({dist[u]})", dist))
+    return dist, prev
+
+
+dist, prev = dijkstra(names.index('A'))
+
+for t in range(1, N):
+    path = []
+    cur = t
+    while cur != NONE:
+        path.append(names[cur])
+        cur = prev[cur]
+    path.reverse()
+    print(f"A to {names[t]}: cost {dist[t]}: " + " -> ".join(path))
